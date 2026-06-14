@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ThriftCult | The Full Archive</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&amp;family=Hanken+Grotesk:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary": "#eac249",
+                        "surface-container-low": "#1c1b1b",
+                        "surface-container": "#201f1f",
+                        "secondary-fixed": "#ffe08b",
+                        "surface-container-high": "#2a2a2a",
+                        "on-tertiary": "#30312e",
+                        "on-background": "#e5e2e1",
+                        "background": "#131313",
+                        "on-secondary-fixed-variant": "#584400",
+                        "error-container": "#93000a",
+                        "surface-bright": "#393939",
+                        "on-error": "#690005",
+                        "inverse-primary": "#735c00",
+                        "surface": "#131313",
+                        "on-primary-fixed": "#241a00",
+                        "tertiary-fixed-dim": "#c8c6c2",
+                        "on-primary-container": "#554300",
+                        "inverse-on-surface": "#313030",
+                        "surface-dim": "#131313",
+                        "on-primary-fixed-variant": "#574500",
+                        "primary-container": "#d4af37",
+                        "primary-fixed": "#ffe088",
+                        "on-tertiary-fixed": "#1b1c19",
+                        "on-tertiary-fixed-variant": "#474744",
+                        "surface-container-lowest": "#0e0e0e",
+                        "outline": "#99907c",
+                        "surface-container-highest": "#353534",
+                        "primary": "#f2ca50",
+                        "on-surface-variant": "#d0c5af",
+                        "on-tertiary-container": "#454542",
+                        "on-secondary-fixed": "#241a00",
+                        "on-secondary-container": "#352800",
+                        "error": "#ffb4ab",
+                        "tertiary-container": "#b4b3af",
+                        "primary-fixed-dim": "#e9c349",
+                        "tertiary-fixed": "#e4e2dd",
+                        "tertiary": "#d0ceca",
+                        "on-secondary": "#3d2f00",
+                        "outline-variant": "#4d4635",
+                        "inverse-surface": "#e5e2e1",
+                        "secondary-fixed-dim": "#eac249",
+                        "on-error-container": "#ffdad6",
+                        "surface-variant": "#353534",
+                        "secondary-container": "#b08c10",
+                        "on-primary": "#3c2f00",
+                        "surface-tint": "#e9c349",
+                        "on-surface": "#e5e2e1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "32px",
+                        "section-padding": "120px",
+                        "base": "8px",
+                        "margin-desktop": "64px",
+                        "margin-mobile": "20px",
+                        "container-max": "1440px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Hanken Grotesk"],
+                        "headline-md": ["EB Garamond"],
+                        "button": ["Hanken Grotesk"],
+                        "label-caps": ["Hanken Grotesk"],
+                        "headline-xl": ["EB Garamond"],
+                        "display-lg": ["EB Garamond"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "display-lg-mobile": ["EB Garamond"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "400"}],
+                        "button": ["14px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.15em", "fontWeight": "600"}],
+                        "headline-xl": ["48px", {"lineHeight": "1.2", "fontWeight": "400"}],
+                        "display-lg": ["72px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "500"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "400"}],
+                        "display-lg-mobile": ["48px", {"lineHeight": "1.2", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #131313;
+            color: #e5e2e1;
+            -webkit-font-smoothing: antialiased;
+        }
+        .gold-thread {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+            position: relative;
+        }
+        .gold-thread::after {
+            content: '◆';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            color: #d4af37;
+            font-size: 8px;
+        }
+        .glass-nav {
+            background: rgba(19, 19, 19, 0.6);
+            backdrop-filter: blur(20px);
+        }
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+        .product-card {
+            border: 1px solid #353534;
+            transition: border-color 0.4s ease;
+        }
+        .product-card:hover {
+            border-color: #d4af37;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="font-body-md overflow-x-hidden">
+<!-- Brand Name Only (modified for Cart) -->
+<div class="w-full flex justify-between items-center py-6 px-6 md:px-16 border-b border-outline-variant/30 bg-background/80 backdrop-blur-md sticky top-0 z-50">
+    <div class="w-24 sm:w-32"></div><!-- Spacer to center title -->
+    <span class="font-display-lg text-[28px] md:text-[36px] text-primary uppercase tracking-widest">ThriftCult</span>
+    <button onclick="toggleCartDrawer(true)" class="flex items-center gap-2 font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors relative w-24 sm:w-32 justify-end">
+        <span class="material-symbols-outlined text-xl">shopping_cart</span>
+        <span class="hidden sm:inline">Cart</span>
+        <span id="cart-count" class="bg-primary text-background rounded-full text-[10px] w-4 h-4 flex items-center justify-center font-bold absolute -top-2 -right-2 hidden">0</span>
+    </button>
+</div>
+<!-- Hero Header -->
+<header class="pt-16 pb-20 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto text-center">
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-background mb-4 italic">The Full Archive</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto opacity-80">
+            A curated anthology of artisanal garments, where raw streetwear meets uncompromising luxury craftsmanship.
+        </p>
+</header>
+<!-- Filters Section -->
+<section class="sticky top-20 z-40 bg-background/90 backdrop-blur-sm border-y border-outline-variant/20 py-6 mb-gutter">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop flex flex-wrap justify-between items-center gap-base">
+<div class="flex items-center gap-gutter overflow-x-auto no-scrollbar">
+<button class="flex items-center gap-2 group">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span class="font-label-caps text-label-caps uppercase text-primary">All Items</span>
+</button>
+<button class="flex items-center gap-2 group opacity-60 hover:opacity-100 transition-opacity">
+<span class="font-label-caps text-label-caps uppercase text-on-surface">Caps</span>
+</button>
+<button class="flex items-center gap-2 group opacity-60 hover:opacity-100 transition-opacity">
+<span class="font-label-caps text-label-caps uppercase text-on-surface">T-Shirts</span>
+</button>
+<button class="flex items-center gap-2 group opacity-60 hover:opacity-100 transition-opacity">
+<span class="font-label-caps text-label-caps uppercase text-on-surface">Hoodies</span>
+</button>
+<button class="flex items-center gap-2 group opacity-60 hover:opacity-100 transition-opacity">
+<span class="font-label-caps text-label-caps uppercase text-on-surface">Custom Build</span>
+</button>
+</div>
+<div class="flex items-center gap-gutter ml-auto">
+<div class="relative group">
+<button class="flex items-center gap-2 font-label-caps text-label-caps uppercase border-b border-primary/30 pb-1 hover:border-primary transition-all">
+                        Sort by: Newest
+                        <span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+</div>
+<button class="flex items-center gap-2 font-label-caps text-label-caps uppercase border border-outline-variant/30 px-4 py-2 hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-lg">tune</span>
+                    Filters
+                </button>
+</div>
+</div>
+</section>
+<!-- Product Grid -->
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-gutter">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-16 gap-x-gutter">
+<!-- Custom Cap Card -->
+<div onclick="openQuickView('noir-trucker')" class="product-card group relative block cursor-pointer">
+<div class="relative overflow-hidden aspect-[4/5] mb-6">
+<img class="product-image w-full h-full object-cover transition-transform duration-700 ease-out" data-alt="A premium black trucker cap with high-contrast gold metallic embroidery on the front panel, sitting on a dark marble plinth. The lighting is moody and dramatic, focusing on the intricate threadwork and artisanal textures of the fabric against a deep noir background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTvKubNDWoVw0bw25JZ_UvayKfH64RmqkVSvB2CK06ojcuzDEIw5u6txsU8A1Pd5fh9wxipAxboG13_fPWy9hoGhh3-hEcFFGoLWowsNoUuZcQjswRDe8napwgl5RzQ77yQHtqEWcAPL0KhmQVy6mYJPlMWu9xBzboiG1PFGNyAVHoDX70xagB3JtHUQb5V9XF_83qanefklwRHRF_teMEf3xJd32RD5MXzB342EIXp5gakG3pWS9D9Uciqwuo-t2mwsbpO2wa9SY"/>
+<div class="absolute top-4 left-4 bg-primary px-3 py-1">
+<span class="font-label-caps text-[10px] text-background uppercase font-bold tracking-widest">HandDesign</span>
+</div>
+</div>
+<div class="space-y-1 px-2">
+<h3 class="font-headline-md text-[20px] text-on-surface group-hover:text-primary transition-colors">Noir Signature Trucker</h3>
+<p class="font-label-caps text-primary text-[14px]">₹0.00</p>
+</div>
+<div class="absolute bottom-16 right-4 opacity-0 group-hover:opacity-100 transition-opacity bg-background p-3 rounded-full border border-primary text-primary transform duration-300">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+</div>
+</div>
+<!-- T-Shirt Card -->
+<div onclick="openQuickView('gilded-tee')" class="product-card group relative block cursor-pointer">
+<div class="relative overflow-hidden aspect-[4/5] mb-6">
+<img class="product-image w-full h-full object-cover transition-transform duration-700 ease-out" data-alt="An editorial close-up of a high-end heavyweight black cotton t-shirt featuring intricate gold wire embroidery of an abstract logo. The lighting highlights the texture of the premium cotton and the reflective sheen of the gold thread, creating a sense of luxury and exclusivity in a minimalist setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEnkDsu31vrnt4hSG3CTa4yXV32cvob4ZUZZpdQRPYe6xj6ERWArNJGRszKXx-kWjKl7FUD_ktE0jvAUC490OLHXZM56cFBjsJnt37L5OFrFcVZR4RBOn0X44zkqPBbZl7904KoDvdV9-H22exH83DXXukpLXco6NTesWZE0LdiXJYGdUaxfMHxtZihrwZh6H-_8wDzhg6gcZLxmbDwhphT0hketTYZ9IuCUGN1UMB6eDKMsLkK-FptZKDHyNWw7wP-nmuoO2Csrg"/>
+<div class="absolute top-4 right-4">
+<span class="font-label-caps text-[10px] text-primary/70 uppercase">01 / Collection 04</span>
+</div>
+</div>
+<div class="space-y-1 px-2">
+<h3 class="font-headline-md text-[20px] text-on-surface group-hover:text-primary transition-colors">Gilded Threads Heavy Tee</h3>
+<p class="font-label-caps text-primary text-[14px]">₹0.00</p>
+</div>
+<div class="absolute bottom-16 right-4 opacity-0 group-hover:opacity-100 transition-opacity bg-background p-3 rounded-full border border-primary text-primary transform duration-300">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+</div>
+</div>
+<!-- Hoodie Card -->
+<div onclick="openQuickView('artisanal-hoodie')" class="product-card group relative block cursor-pointer">
+<div class="relative overflow-hidden aspect-[4/5] mb-6">
+<img class="product-image w-full h-full object-cover transition-transform duration-700 ease-out" data-alt="A distressed black heavyweight hoodie with hand-painted gold accents on the cuffs and hem, hanging on a minimalist metal frame. The lighting is low-key, emphasizing the rough, tactile texture of the fabric and the artisanal imperfections of the artisanal Noir style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxzSOFHLaWHQFQFHsgZaq2QC_9xKCSpiW2OAvWukzTIRB75HbpiufpL3gaA_pHgBPtlwir15UZ6YpRZ6l1kXi65Uw0VYou88uR1azOa_ULts7DQSIVrmuTXVK2t0NFAckFRPAu-QkVR_5Ak71HeAfucfGqlmbsRCgZ99T_yqu--aDhxmb6Q7ZXvCAXOYuheQCBVupjFaAyHXvoYNGPbFiMCvNvAV0Wyvmo_ABdMzhAVLDm1CwRtNCUD2Bg-6e3VNfGjEL-pFRtlBU"/>
+<div class="absolute top-4 left-4 bg-primary px-3 py-1">
+<span class="font-label-caps text-[10px] text-background uppercase font-bold tracking-widest">Archive Piece</span>
+</div>
+</div>
+<div class="space-y-1 px-2">
+<h3 class="font-headline-md text-[20px] text-on-surface group-hover:text-primary transition-colors">Distressed Artisanal Hoodie</h3>
+<p class="font-label-caps text-primary text-[14px]">₹0.00</p>
+</div>
+<div class="absolute bottom-16 right-4 opacity-0 group-hover:opacity-100 transition-opacity bg-background p-3 rounded-full border border-primary text-primary transform duration-300">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+</div>
+</div>
+<!-- More Products (Repeat Grid for Full Archive feel) -->
+<div onclick="openQuickView('diamond-cap')" class="product-card group relative block cursor-pointer">
+<div class="relative overflow-hidden aspect-[4/5] mb-6">
+<img class="product-image w-full h-full object-cover transition-transform duration-700 ease-out" data-alt="A sleek black minimalist baseball cap featuring a single gold diamond stitch on the side. The lighting is crisp and editorial, highlighting the sharp silhouette and premium matte finish of the fabric against a dark, moody studio background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGeHJYJmOB13H5hSkufFMFKHPokj4VLXsT9dPV84wNufguiepqCWDliLo4d0y4CHH747gvT377xzG98pSBvtb-sXiYye3gDEf-Phd3Auu8WAmR-MRQUtau_e3n-thx7PMChI4KBpqA1EoFi5emnFtQ6ESrlsJWs4B5UNpcs08Vzjplj4FO3WofKiali3c71nvEpXHVXtDEP0oeSMcR8A3TWLZkPhtrBxB5pA-GdmF-wc_7UkeShPTI94t1__rL8yf-GF8nEsAyVJ8"/>
+</div>
+<div class="space-y-1 px-2">
+<h3 class="font-headline-md text-[20px] text-on-surface group-hover:text-primary transition-colors">Diamond Point Cap</h3>
+<p class="font-label-caps text-primary text-[14px]">₹0.00</p>
+</div>
+<div class="absolute bottom-16 right-4 opacity-0 group-hover:opacity-100 transition-opacity bg-background p-3 rounded-full border border-primary text-primary transform duration-300">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+</div>
+</div>
+<div onclick="openQuickView('gold-foil-tee')" class="product-card group relative block cursor-pointer">
+<div class="relative overflow-hidden aspect-[4/5] mb-6">
+<img class="product-image w-full h-full object-cover transition-transform duration-700 ease-out" data-alt="A minimalist black t-shirt with a structured boxy fit, featuring a gold foil brand mark on the chest. The studio lighting creates deep shadows and highlights the premium weight of the fabric, embodying the 'Artisanal Noir' luxury streetwear aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpegRzcGml_tXKInsmoDaufbS1FZWRDxzf5Vmq_Y6ce6wLJOktzCiXOHcroQBdcEbFuM6eLqdUc3VcL00ByRKSu1wNAnSRx7lMaQeIqn9Fq6VsN_LJtO6M_eDIj2Jw0JueRoxSo20jDZ8v8Dzs0UQOupzgqbtbJ46d1-W-lTXsmqPE1NIbx4oEZtdMwBxDySJSTQ6PMnrI2lGGpm6vchvKT7v3ESRs8gzCCBEwEYzzqz6wf38K5Kt_WVRKx3H0mqGQwveqVPp6fAA"/>
+<div class="absolute top-4 left-4 bg-surface-container-high px-3 py-1">
+<span class="font-label-caps text-[10px] text-primary uppercase font-bold tracking-widest">Limited</span>
+</div>
+</div>
+<div class="space-y-1 px-2">
+<h3 class="font-headline-md text-[20px] text-on-surface group-hover:text-primary transition-colors">Structured Gold Foil Tee</h3>
+<p class="font-label-caps text-primary text-[14px]">₹0.00</p>
+</div>
+<div class="absolute bottom-16 right-4 opacity-0 group-hover:opacity-100 transition-opacity bg-background p-3 rounded-full border border-primary text-primary transform duration-300">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+</div>
+</div>
+<div onclick="openQuickView('zip-hoodie')" class="product-card group relative block cursor-pointer">
+<div class="relative overflow-hidden aspect-[4/5] mb-6">
+<img class="product-image w-full h-full object-cover transition-transform duration-700 ease-out" data-alt="A luxury heavyweight zip-up hoodie in deep charcoal black with custom gold-plated hardware. The shot is a detailed perspective of the zipper and heavy fabric ribbing, emphasizing craftsmanship and high-end materials in an exclusive, artisanal noir style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCi7xmIf7KS9WenEauAoCunGUFz7lyzidwieC4XtO4uJUBm-85vHXtfXZmzf46qHjttphXWrTvLz7FViFS_imW5S9koe8faGpzgUPwsFANLAQwrDu_awJpamIDpVO2lD33bzk7whn6kqQHkPyMaR7cIpQyzJECZaAc_yeSA3R6vwUA4Abqkq31ZNvAk9ocUeUVlN7hpJfLtcy5WPB9cIcKRCchCywycZW_PcHuxqOSEv3CRVqoOpYI49Ro4w-CHh09tY2AaItWcy8I"/>
+</div>
+<div class="space-y-1 px-2">
+<h3 class="font-headline-md text-[20px] text-on-surface group-hover:text-primary transition-colors">Hardware Zip Hoodie</h3>
+<p class="font-label-caps text-primary text-[14px]">₹0.00</p>
+</div>
+<div class="absolute bottom-16 right-4 opacity-0 group-hover:opacity-100 transition-opacity bg-background p-3 rounded-full border border-primary text-primary transform duration-300">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+</div>
+</div>
+</div>
+<!-- Pagination / Load More -->
+<div class="flex flex-col items-center mt-section-padding space-y-gutter">
+<div class="gold-thread w-full max-w-lg opacity-40"></div>
+<p class="font-label-caps text-on-surface-variant opacity-60">Showing 6 of 48 pieces</p>
+<button class="px-12 py-4 border border-primary text-primary font-button uppercase tracking-widest hover:bg-primary hover:text-background transition-all duration-300">
+                Reveal More
+            </button>
+</div>
+</main>
+<!-- Artisanal Noir Narrative Section -->
+<section class="py-section-padding bg-surface-container-lowest overflow-hidden">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop grid md:grid-cols-2 items-center gap-section-padding">
+<div class="relative">
+<img class="w-full aspect-[4/5] object-cover grayscale brightness-75" data-alt="A sophisticated editorial fashion shot featuring a model in a high-end black garment, silhouetted against a golden-hour glow. The aesthetic is extremely minimalist and luxury-oriented, capturing the essence of the ThriftCult brand's commitment to artisanal quality and dark, mysterious energy." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmWajFVQVUgGupoCzYC3AE_oE0FN01VDqEV8P_IsiC9ysvMqst1clUbJg-J6L6Ehv6vIIEya36OOawCNU9khEpA_hqYaCuaZ3cTgxmX5B5wuDJZOH6IyVe_jXj4meWsszZqAeZCYKWIace9FC3HvTdocEGx_jgWLV0QL81deepo97wEAhZYm-l8dpba8b4Bg7BW6k2m8UTFwW8nyXNpFClUpp_Dhm9VReysrv0beLFvKYpj3X3KJRz6OakQtnD38QqKnPjKdSe_Cg"/>
+<div class="absolute inset-0 border-[24px] border-background/20 pointer-events-none"></div>
+</div>
+<div class="space-y-base">
+<h2 class="font-headline-xl text-headline-xl text-on-background italic mb-8">Crafting the Cult</h2>
+<div class="space-y-gutter">
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+                        Every piece in the Archive is born from a singular philosophy: that clothing should be as intentional as the person wearing it. Our "HandDesign" badge is not just a label—it's a signature of human touch.
+                    </p>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+                        We source the heaviest textiles and treat them with a reverence usually reserved for fine art. The gold threads are not decorative; they are the structural soul of our collective.
+                    </p>
+<a class="inline-block font-button text-primary border-b-2 border-primary pb-1 hover:pb-3 transition-all duration-300" href="#">
+                        Explore Our Story
+                    </a>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest w-full border-t border-outline-variant/20">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-gutter flex flex-col md:flex-row justify-between items-center gap-base">
+<div class="flex flex-col items-center md:items-start gap-2">
+<span class="font-headline-md text-headline-md text-primary uppercase">ThriftCult</span>
+<p class="font-body-md text-body-md text-on-surface-variant opacity-60">© 2024 THRIFTCULT. ARTISANAL NOIR COLLECTIVE.</p>
+</div>
+<div class="flex gap-gutter">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Archives</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Size Guide</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Shipping</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Terms</a>
+</div>
+<div class="flex gap-6">
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">brand_family</span></a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">public</span></a>
+</div>
+</div>
+</footer>
+<!-- Quick View Modal -->
+<div id="quick-view-modal" class="fixed inset-0 z-[110] flex items-center justify-center pointer-events-none opacity-0 invisible transition-all duration-300">
+    <div id="modal-backdrop" onclick="closeQuickViewModal()" class="absolute inset-0 bg-background/90 backdrop-blur-sm pointer-events-auto"></div>
+    <div class="relative w-full max-w-3xl bg-surface border border-outline-variant/30 flex flex-col md:flex-row pointer-events-auto max-h-[90vh] md:max-h-none overflow-y-auto md:overflow-visible mx-4 md:mx-0 shadow-2xl shadow-black z-10">
+        <div class="absolute top-0 left-0 w-4 h-4 border-t border-l border-primary/70"></div>
+        <div class="absolute top-0 right-0 w-4 h-4 border-t border-r border-primary/70"></div>
+        <div class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-primary/70"></div>
+        <div class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-primary/70"></div>
+        <button onclick="closeQuickViewModal()" class="absolute -top-12 right-0 md:-right-12 md:top-0 text-on-surface-variant hover:text-primary transition-colors p-2 z-20">
+            <span class="material-symbols-outlined text-3xl">close</span>
+        </button>
+        <div class="w-full md:w-1/2 aspect-[4/5] bg-surface-container-low relative overflow-hidden">
+            <img id="modal-img" src="" alt="Product Image" class="w-full h-full object-cover"/>
+            <div id="modal-badge-container" class="absolute top-4 left-4 bg-primary px-3 py-1 hidden">
+                <span id="modal-badge-text" class="font-label-caps text-[10px] text-background uppercase font-bold tracking-widest"></span>
+            </div>
+        </div>
+        <div class="w-full md:w-1/2 p-8 flex flex-col justify-between space-y-6">
+            <div class="space-y-4">
+                <span class="font-label-caps text-[10px] text-primary tracking-[0.2em] mb-2 block">Quick Select</span>
+                <h2 id="modal-name" class="font-display-lg text-3xl text-on-background italic mb-3">Product Name</h2>
+                <p id="modal-price" class="font-display-lg text-2xl text-primary mb-4">₹0.00</p>
+                <div class="h-[1px] bg-outline-variant/30 w-full mb-4"></div>
+                <p id="modal-desc" class="font-body-md text-sm text-on-surface-variant leading-relaxed mb-4">Product description details.</p>
+            </div>
+            <div class="space-y-4">
+                <button onclick="addCurrentModalItemToCart()" class="w-full bg-primary text-background font-button text-sm uppercase tracking-widest py-4 hover:bg-secondary transition-colors duration-300 flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:shadow-[0_0_25px_rgba(212,175,55,0.6)]">
+                    <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                    Add to Cart
+                </button>
+                <a id="modal-details-link" href="#" class="block text-center font-button text-sm font-bold text-primary hover:text-background transition-colors tracking-widest border border-primary py-4 hover:bg-primary transition-all duration-300 uppercase shadow-[0_0_15px_rgba(212,175,55,0.15)] hover:shadow-[0_0_25px_rgba(212,175,55,0.4)]">
+                    View Full Details & Checkout
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cart Drawer -->
+<div id="cart-drawer" class="fixed inset-0 z-[120] pointer-events-none invisible transition-all duration-300">
+    <div id="cart-backdrop" onclick="toggleCartDrawer(false)" class="absolute inset-0 bg-background/80 backdrop-blur-sm opacity-0 transition-opacity duration-500 ease-in-out pointer-events-auto"></div>
+    <div id="cart-container" class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-surface border-l border-outline-variant/30 flex flex-col pointer-events-auto translate-x-full transition-transform duration-500 ease-in-out shadow-2xl shadow-black">
+        <div class="p-6 border-b border-outline-variant/30 flex justify-between items-center bg-surface-container-lowest">
+            <span class="font-headline-md text-2xl text-primary uppercase tracking-wider italic">Your Cart</span>
+            <button onclick="toggleCartDrawer(false)" class="text-on-surface-variant hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-2xl">close</span>
+            </button>
+        </div>
+        <div id="cart-items-container" class="flex-grow overflow-y-auto p-6 space-y-6 bg-surface-dim">
+            <p id="empty-cart-msg" class="text-center font-body-lg text-on-surface-variant opacity-60 mt-12">Your cart is empty.</p>
+        </div>
+        <div class="p-6 border-t border-outline-variant/30 bg-surface-container-lowest space-y-4">
+            <div class="flex justify-between items-center font-label-caps text-sm text-on-surface-variant tracking-widest">
+                <span>SUBTOTAL</span><span id="cart-subtotal" class="text-primary text-base font-semibold">₹0.00</span>
+            </div>
+            <p class="font-body-md text-xs text-on-surface-variant/50">Free shipping & taxes included.</p>
+            <button onclick="checkoutCart()" class="w-full bg-primary text-background font-button text-sm uppercase tracking-widest py-4 hover:bg-secondary transition-colors duration-300 flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:shadow-[0_0_25px_rgba(212,175,55,0.6)]">
+                <span class="material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1;">shopping_bag</span>
+                Proceed to Checkout
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+        // ── Products data matching product.html ─────────────────────────────────────────────
+        const products = {
+            'noir-trucker': {
+                name: 'Noir Signature Trucker',
+                price: '₹0.00',
+                badge: 'HandDesign',
+                desc: 'A premium black trucker cap with high-contrast gold metallic embroidery on the front panel. Hand-crafted with precision, each cap features individually placed gold thread stitching — no two are alike. The structured front panel is made from heavyweight canvas, and the mesh back ensures breathability without compromising the silhouette.',
+                img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCTvKubNDWoVw0bw25JZ_UvayKfH64RmqkVSvB2CK06ojcuzDEIw5u6txsU8A1Pd5fh9wxipAxboG13_fPWy9hoGhh3-hEcFFGoLWowsNoUuZcQjswRDe8napwgl5RzQ77yQHtqEWcAPL0KhmQVy6mYJPlMWu9xBzboiG1PFGNyAVHoDX70xagB3JtHUQb5V9XF_83qanefklwRHRF_teMEf3xJd32RD5MXzB342EIXp5gakG3pWS9D9Uciqwuo-t2mwsbpO2wa9SY',
+                sizes: ['One Size']
+            },
+            'gilded-tee': {
+                name: 'Gilded Threads Heavy Tee',
+                price: '₹0.00',
+                badge: '',
+                desc: 'A high-end heavyweight black cotton t-shirt featuring intricate gold wire embroidery of an abstract logo. Crafted from 350gsm compact cotton, this piece is built to outlast trends. The gold embroidery thread is sourced from artisanal workshops and applied by hand, giving each tee a unique character. Part of Collection 04.',
+                img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBEnkDsu31vrnt4hSG3CTa4yXV32cvob4ZUZZpdQRPYe6xj6ERWArNJGRszKXx-kWjKl7FUD_ktE0jvAUC490OLHXZM56cFBjsJnt37L5OFrFcVZR4RBOn0X44zkqPBbZl7904KoDvdV9-H22exH83DXXukpLXco6NTesWZE0LdiXJYGdUaxfMHxtZihrwZh6H-_8wDzhg6gcZLxmbDwhphT0hketTYZ9IuCUGN1UMB6eDKMsLkK-FptZKDHyNWw7wP-nmuoO2Csrg',
+                sizes: ['XS', 'S', 'M', 'L']
+            },
+            'artisanal-hoodie': {
+                name: 'Distressed Artisanal Hoodie',
+                price: '₹0.00',
+                badge: 'Archive Piece',
+                desc: 'A distressed black heavyweight hoodie with hand-painted gold accents on the cuffs and hem. Constructed from a heavyweight French Terry fleece at 420gsm, each hoodie is individually distressed by our artisans using proprietary techniques — raw edges, intentional fading, and gold paint accents applied freehand. A true archive piece.',
+                img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBxzSOFHLaWHQFQFHsgZaq2QC_9xKCSpiW2OAvWukzTIRB75HbpiufpL3gaA_pHgBPtlwir15UZ6YpRZ6l1kXi65Uw0VYou88uR1azOa_ULts7DQSIVrmuTXVK2t0NFAckFRPAu-QkVR_5Ak71HeAfucfGqlmbsRCgZ99T_yqu--aDhxmb6Q7ZXvCAXOYuheQCBVupjFaAyHXvoYNGPbFiMCvNvAV0Wyvmo_ABdMzhAVLDm1CwRtNCUD2Bg-6e3VNfGjEL-pFRtlBU',
+                sizes: ['XS', 'S', 'M', 'L']
+            },
+            'diamond-cap': {
+                name: 'Diamond Point Cap',
+                price: '₹0.00',
+                badge: '',
+                desc: 'A sleek black minimalist baseball cap featuring a single gold diamond stitch on the side. The crisp, editorial silhouette is achieved through a structured 6-panel design with a pre-curved brim. The gold diamond embroidery is placed by hand on each cap, symbolising the precision and restraint at the heart of ThriftCult.',
+                img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCGeHJYJmOB13H5hSkufFMFKHPokj4VLXsT9dPV84wNufguiepqCWDliLo4d0y4CHH747gvT377xzG98pSBvtb-sXiYye3gDEf-Phd3Auu8WAmR-MRQUtau_e3n-thx7PMChI4KBpqA1EoFi5emnFtQ6ESrlsJWs4B5UNpcs08Vzjplj4FO3WofKiali3c71nvEpXHVXtDEP0oeSMcR8A3TWLZkPhtrBxB5pA-GdmF-wc_7UkeShPTI94t1__rL8yf-GF8nEsAyVJ8',
+                sizes: ['One Size']
+            },
+            'gold-foil-tee': {
+                name: 'Structured Gold Foil Tee',
+                price: '₹0.00',
+                badge: 'Limited',
+                desc: 'A minimalist black t-shirt with a structured boxy fit, featuring a gold foil brand mark on the chest. The foil is applied using a heat-transfer process with a custom die, creating a mirror-like finish that catches light from every angle. Available in strictly limited quantities — each piece is numbered.',
+                img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCpegRzcGml_tXKInsmoDaufbS1FZWRDxzf5Vmq_Y6ce6wLJOktzCiXOHcroQBdcEbFuM6eLqdUc3VcL00ByRKSu1wNAnSRx7lMaQeIqn9Fq6VsN_LJtO6M_eDIj2Jw0JueRoxSo20jDZ8v8Dzs0UQOupzgqbtbJ46d1-W-lTXsmqPE1NIbx4oEZtdMwBxDySJSTQ6PMnrI2lGGpm6vchvKT7v3ESRs8gzCCBEwEYzzqz6wf38K5Kt_WVRKx3H0mqGQwveqVPp6fAA',
+                sizes: ['XS', 'S', 'M', 'L']
+            },
+            'zip-hoodie': {
+                name: 'Hardware Zip Hoodie',
+                price: '₹0.00',
+                badge: '',
+                desc: 'A luxury heavyweight zip-up hoodie in deep charcoal black with custom gold-plated hardware. The zipper pull, eyelets, and drawstring tips are all custom-fabricated in brass and gold-plated — a detail you feel every time you wear it. The body is 380gsm loopback cotton, pre-washed for a lived-in drape from day one.',
+                img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCi7xmIf7KS9WenEauAoCunGUFz7lyzidwieC4XtO4uJUBm-85vHXtfXZmzf46qHjttphXWrTvLz7FViFS_imW5S9koe8faGpzgUPwsFANLAQwrDu_awJpamIDpVO2lD33bzk7whn6kqQHkPyMaR7cIpQyzJECZaAc_yeSA3R6vwUA4Abqkq31ZNvAk9ocUeUVlN7hpJfLtcy5WPB9cIcKRCchCywycZW_PcHuxqOSEv3CRVqoOpYI49Ro4w-CHh09tY2AaItWcy8I',
+                sizes: ['XS', 'S', 'M', 'L']
+            }
+        };
+
+        let activeProductKey = '';
+
+        // ── Quick View Modal Logic ─────────────────────────────────────────────────────────
+        function openQuickView(productKey) {
+            const p = products[productKey];
+            if (!p) return;
+
+            activeProductKey = productKey;
+            document.getElementById('modal-img').src = p.img;
+            document.getElementById('modal-name').textContent = p.name;
+            document.getElementById('modal-price').textContent = p.price;
+            document.getElementById('modal-desc').textContent = p.desc;
+            
+            const badgeContainer = document.getElementById('modal-badge-container');
+            const badgeText = document.getElementById('modal-badge-text');
+            if (p.badge) {
+                badgeContainer.classList.remove('hidden');
+                badgeText.textContent = p.badge;
+            } else {
+                badgeContainer.classList.add('hidden');
+            }
+
+            // Set link to full detail page
+            document.getElementById('modal-details-link').href = `product.html?product=${productKey}`;
+
+            // Set link to full detail page
+            document.getElementById('modal-details-link').href = `product.html?product=${productKey}`;
+
+            // Open Modal
+            const modal = document.getElementById('quick-view-modal');
+            modal.classList.remove('invisible', 'opacity-0');
+            modal.querySelector('.relative').classList.add('scale-100');
+            modal.classList.add('pointer-events-auto');
+            document.body.classList.add('modal-active');
+        }
+
+        function closeQuickViewModal() {
+            const modal = document.getElementById('quick-view-modal');
+            modal.classList.add('invisible', 'opacity-0');
+            modal.querySelector('.relative').classList.remove('scale-100');
+            modal.classList.remove('pointer-events-auto');
+            document.body.classList.remove('modal-active');
+        }
+
+        function addCurrentModalItemToCart() {
+            addToCart(activeProductKey);
+            closeQuickViewModal();
+            setTimeout(() => {
+                toggleCartDrawer(true);
+            }, 300);
+        }
+
+        // ── Shared Cart System ─────────────────────────────────────────────────────────────
+        const CART_KEY = 'thriftcult_cart';
+
+        function getCart() {
+            try {
+                return JSON.parse(localStorage.getItem(CART_KEY)) || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveCart(cart) {
+            localStorage.setItem(CART_KEY, JSON.stringify(cart));
+            updateCartCountUI();
+        }
+
+        function addToCart(productKey, quantity = 1) {
+            const cart = getCart();
+            const existingIndex = cart.findIndex(item => item.key === productKey);
+            
+            if (existingIndex > -1) {
+                cart[existingIndex].quantity += quantity;
+            } else {
+                cart.push({
+                    key: productKey,
+                    quantity: quantity
+                });
+            }
+            saveCart(cart);
+            renderCartItems();
+            showToast(`Added to cart.`);
+        }
+
+        function removeFromCart(productKey) {
+            let cart = getCart();
+            cart = cart.filter(item => item.key !== productKey);
+            saveCart(cart);
+            renderCartItems();
+        }
+
+        function updateQuantity(productKey, delta) {
+            const cart = getCart();
+            const item = cart.find(item => item.key === productKey);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) {
+                    removeFromCart(productKey);
+                    return;
+                }
+                saveCart(cart);
+                renderCartItems();
+            }
+        }
+
+        function updateCartCountUI() {
+            const cart = getCart();
+            const count = cart.reduce((total, item) => total + item.quantity, 0);
+            const countEl = document.getElementById('cart-count');
+            if (countEl) {
+                countEl.textContent = count;
+                if (count > 0) {
+                    countEl.classList.remove('hidden');
+                } else {
+                    countEl.classList.add('hidden');
+                }
+            }
+        }
+
+        function renderCartItems() {
+            const container = document.getElementById('cart-items-container');
+            const subtotalEl = document.getElementById('cart-subtotal');
+            if (!container) return;
+            
+            const cart = getCart();
+            
+            if (cart.length === 0) {
+                container.innerHTML = `<p id="empty-cart-msg" class="text-center font-body-lg text-on-surface-variant opacity-60 mt-12">Your cart is empty.</p>`;
+                subtotalEl.textContent = '₹0.00';
+                return;
+            }
+            
+            let html = '';
+            cart.forEach(item => {
+                const p = products[item.key];
+                if (!p) return;
+                
+                html += `
+                    <div class="flex gap-4 border-b border-outline-variant/20 pb-4 relative">
+                        <div class="w-20 h-24 bg-surface-container-low flex-shrink-0 border border-outline-variant/30">
+                            <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover"/>
+                        </div>
+                        <div class="flex-grow flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start">
+                                    <h4 class="font-headline-md text-base text-on-surface leading-tight font-semibold pr-4">${p.name}</h4>
+                                    <button onclick="removeFromCart('${item.key}')" class="text-on-surface-variant hover:text-primary transition-colors">
+                                        <span class="material-symbols-outlined text-lg">delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center mt-2">
+                                <div class="flex items-center border border-outline-variant/30">
+                                    <button onclick="updateQuantity('${item.key}', -1)" class="px-2 py-0.5 text-on-surface-variant hover:text-primary transition-colors text-sm font-bold">-</button>
+                                    <span class="px-3 py-0.5 font-body-md text-xs border-x border-outline-variant/30">${item.quantity}</span>
+                                    <button onclick="updateQuantity('${item.key}', 1)" class="px-2 py-0.5 text-on-surface-variant hover:text-primary transition-colors text-sm font-bold">+</button>
+                                </div>
+                                <span class="font-label-caps text-sm text-primary font-semibold">${p.price}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            subtotalEl.textContent = '₹0.00';
+        }
+
+        function toggleCartDrawer(open) {
+            const drawer = document.getElementById('cart-drawer');
+            const backdrop = document.getElementById('cart-backdrop');
+            const container = document.getElementById('cart-container');
+            
+            if (open) {
+                drawer.classList.remove('invisible');
+                setTimeout(() => {
+                    backdrop.classList.remove('opacity-0');
+                    container.classList.remove('translate-x-full');
+                }, 10);
+                document.body.classList.add('cart-drawer-open');
+                renderCartItems();
+            } else {
+                backdrop.classList.add('opacity-0');
+                container.classList.add('translate-x-full');
+                setTimeout(() => {
+                    drawer.classList.add('invisible');
+                }, 500);
+                document.body.classList.remove('cart-drawer-open');
+            }
+        }
+
+        function checkoutCart() {
+            const cart = getCart();
+            if (cart.length === 0) {
+                showToast("Cart is empty");
+                return;
+            }
+            window.location.href = 'product.html?checkout=cart';
+        }
+
+        function showToast(message) {
+            let toastContainer = document.getElementById('toast-container');
+            if (!toastContainer) {
+                toastContainer = document.createElement('div');
+                toastContainer.id = 'toast-container';
+                toastContainer.className = 'fixed bottom-6 right-6 z-[200] flex flex-col gap-2 pointer-events-none';
+                document.body.appendChild(toastContainer);
+            }
+            
+            const toast = document.createElement('div');
+            toast.className = 'bg-surface-container border border-primary text-on-surface px-6 py-4 flex items-center gap-3 shadow-2xl pointer-events-auto transform translate-y-10 opacity-0 transition-all duration-300';
+            toast.innerHTML = `
+                <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                <span class="font-label-caps text-xs tracking-wider">${message.toUpperCase()}</span>
+            `;
+            toastContainer.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+            }, 10);
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // Micro-interaction for hover states on product images
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.querySelector('.product-image').style.transform = 'scale(1.05)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.querySelector('.product-image').style.transform = 'scale(1)';
+            });
+        });
+
+        // Sticky nav glass effect refinement on scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('div.sticky');
+            if (nav) {
+                if (window.scrollY > 50) {
+                    nav.classList.add('shadow-2xl', 'shadow-black/50');
+                } else {
+                    nav.classList.remove('shadow-2xl', 'shadow-black/50');
+                }
+            }
+        });
+
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCountUI();
+        });
+    </script>
+</body></html>

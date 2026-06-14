@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ThriftCult | Order</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Hanken+Grotesk:wght@100..900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    "secondary": "#eac249",
+                    "surface-container-low": "#1c1b1b",
+                    "surface-container": "#201f1f",
+                    "surface-container-high": "#2a2a2a",
+                    "on-background": "#e5e2e1",
+                    "background": "#131313",
+                    "error-container": "#93000a",
+                    "surface-bright": "#393939",
+                    "on-error": "#690005",
+                    "inverse-primary": "#735c00",
+                    "surface": "#131313",
+                    "on-primary-container": "#554300",
+                    "inverse-on-surface": "#313030",
+                    "surface-dim": "#131313",
+                    "primary-container": "#d4af37",
+                    "primary-fixed": "#ffe088",
+                    "surface-container-lowest": "#0e0e0e",
+                    "outline": "#99907c",
+                    "surface-container-highest": "#353534",
+                    "primary": "#f2ca50",
+                    "on-surface-variant": "#d0c5af",
+                    "on-secondary-fixed": "#241a00",
+                    "error": "#ffb4ab",
+                    "tertiary-container": "#b4b3af",
+                    "primary-fixed-dim": "#e9c349",
+                    "tertiary": "#d0ceca",
+                    "on-secondary": "#3d2f00",
+                    "outline-variant": "#4d4635",
+                    "inverse-surface": "#e5e2e1",
+                    "on-error-container": "#ffdad6",
+                    "surface-variant": "#353534",
+                    "secondary-container": "#b08c10",
+                    "on-primary": "#3c2f00",
+                    "on-surface": "#e5e2e1"
+                },
+                borderRadius: {
+                    DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px"
+                },
+                spacing: {
+                    gutter: "32px", "section-padding": "120px", base: "8px",
+                    "margin-desktop": "64px", "margin-mobile": "20px", "container-max": "1440px"
+                },
+                fontFamily: {
+                    "body-md": ["Hanken Grotesk"],
+                    "headline-md": ["EB Garamond"],
+                    "button": ["Hanken Grotesk"],
+                    "label-caps": ["Hanken Grotesk"],
+                    "headline-xl": ["EB Garamond"],
+                    "display-lg": ["EB Garamond"],
+                    "body-lg": ["Hanken Grotesk"],
+                    "display-lg-mobile": ["EB Garamond"]
+                },
+                fontSize: {
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "400"}],
+                    "button": ["14px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                    "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.15em", "fontWeight": "600"}],
+                    "headline-xl": ["48px", {"lineHeight": "1.2", "fontWeight": "400"}],
+                    "display-lg": ["72px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "400"}],
+                    "display-lg-mobile": ["48px", {"lineHeight": "1.2", "fontWeight": "500"}]
+                }
+            }
+        }
+    }
+</script>
+<style>
+    * { box-sizing: border-box; }
+    body {
+        background-color: #131313;
+        color: #e5e2e1;
+        -webkit-font-smoothing: antialiased;
+        font-family: 'Hanken Grotesk', sans-serif;
+    }
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+    }
+
+    /* Gold thread divider */
+    .gold-thread {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #d4af37 40%, #d4af37 60%, transparent);
+        position: relative;
+    }
+    .gold-thread::after {
+        content: '◆';
+        position: absolute;
+        left: 50%; top: 50%;
+        transform: translate(-50%, -50%);
+        color: #d4af37;
+        font-size: 8px;
+        background: #131313;
+        padding: 0 6px;
+    }
+
+    /* Floating label inputs */
+    .input-group { position: relative; }
+    .input-group input,
+    .input-group select {
+        width: 100%;
+        background: #1c1b1b;
+        border: 1px solid #4d4635;
+        color: #e5e2e1;
+        padding: 20px 18px 8px;
+        font-family: 'Hanken Grotesk', sans-serif;
+        font-size: 16px;
+        outline: none;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        appearance: none;
+        border-radius: 4px;
+    }
+    .input-group input:focus,
+    .input-group select:focus {
+        border-color: #d4af37;
+        box-shadow: 0 0 0 1px #d4af3750, 0 0 20px #d4af3715;
+    }
+    .input-group label {
+        position: absolute;
+        left: 18px; top: 14px;
+        font-family: 'Hanken Grotesk', sans-serif;
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: #99907c;
+        pointer-events: none;
+        transition: all 0.2s ease;
+    }
+    .input-group input:focus ~ label,
+    .input-group input:not(:placeholder-shown) ~ label,
+    .input-group select:focus ~ label,
+    .input-group select.has-value ~ label {
+        top: 6px;
+        font-size: 10px;
+        color: #d4af37;
+    }
+    .input-group input::placeholder { color: transparent; }
+
+    /* Payment method toggle */
+    .payment-option {
+        flex: 1;
+        position: relative;
+        cursor: pointer;
+    }
+    .payment-option input[type="radio"] { display: none; }
+    .payment-option label {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 18px 22px;
+        border: 1px solid #4d4635;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-radius: 4px;
+        background: #1c1b1b;
+        font-family: 'Hanken Grotesk', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #99907c;
+    }
+    .payment-option input[type="radio"]:checked + label {
+        border-color: #d4af37;
+        color: #f2ca50;
+        background: #1c1b1b;
+        box-shadow: 0 0 0 1px #d4af3750, 0 0 20px #d4af3715;
+    }
+    .payment-option label .radio-dot {
+        width: 18px; height: 18px;
+        border: 1.5px solid #4d4635;
+        border-radius: 50%;
+        flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        transition: border-color 0.3s ease;
+    }
+    .payment-option input[type="radio"]:checked + label .radio-dot {
+        border-color: #d4af37;
+    }
+    .payment-option input[type="radio"]:checked + label .radio-dot::after {
+        content: '';
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: #d4af37;
+    }
+
+    /* UPI / Card panel */
+    .payment-panel {
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        transition: max-height 0.5s ease, opacity 0.4s ease, margin 0.3s ease;
+    }
+    .payment-panel.active {
+        max-height: 400px;
+        opacity: 1;
+        margin-top: 16px;
+    }
+
+    /* Product image shimmer on load */
+    @keyframes shimmer {
+        0% { background-position: -400px 0; }
+        100% { background-position: 400px 0; }
+    }
+    .img-skeleton {
+        background: linear-gradient(90deg, #1c1b1b 25%, #2a2a2a 50%, #1c1b1b 75%);
+        background-size: 800px 100%;
+        animation: shimmer 1.5s infinite;
+    }
+
+    /* Corner accent */
+    .corner-accent { position: absolute; width: 20px; height: 20px; }
+    .corner-tl { top: 0; left: 0; border-top: 1px solid #d4af3770; border-left: 1px solid #d4af3770; }
+    .corner-tr { top: 0; right: 0; border-top: 1px solid #d4af3770; border-right: 1px solid #d4af3770; }
+    .corner-bl { bottom: 0; left: 0; border-bottom: 1px solid #d4af3770; border-left: 1px solid #d4af3770; }
+    .corner-br { bottom: 0; right: 0; border-bottom: 1px solid #d4af3770; border-right: 1px solid #d4af3770; }
+
+    /* Submit button glow */
+    .btn-order {
+        background: #d4af37;
+        color: #131313;
+        font-family: 'Hanken Grotesk', sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        padding: 20px 48px;
+        width: 100%;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 20px rgba(212,175,55,0.3);
+        border-radius: 2px;
+        position: relative;
+        overflow: hidden;
+    }
+    .btn-order::before {
+        content: '';
+        position: absolute; inset: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+        opacity: 0; transition: opacity 0.3s;
+    }
+    .btn-order:hover {
+        background: #f2ca50;
+        box-shadow: 0 0 40px rgba(212,175,55,0.6), 0 0 80px rgba(212,175,55,0.2);
+        transform: translateY(-1px);
+    }
+    .btn-order:hover::before { opacity: 1; }
+    .btn-order:active { transform: translateY(0); }
+
+    /* Success overlay */
+    .success-overlay {
+        display: none;
+        position: fixed; inset: 0;
+        background: rgba(13,13,13,0.95);
+        z-index: 9999;
+        align-items: center; justify-content: center;
+        flex-direction: column; gap: 24px;
+        backdrop-filter: blur(12px);
+    }
+    .success-overlay.show { display: flex; }
+    .success-ring {
+        width: 90px; height: 90px;
+        border-radius: 50%;
+        border: 2px solid #d4af37;
+        display: flex; align-items: center; justify-content: center;
+        animation: ring-pulse 2s ease-in-out infinite;
+    }
+    @keyframes ring-pulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(212,175,55,0.4); }
+        50% { box-shadow: 0 0 0 20px rgba(212,175,55,0); }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* Breadcrumb */
+    .breadcrumb a { transition: color 0.2s; }
+    .breadcrumb a:hover { color: #f2ca50; }
+
+    /* Select arrow */
+    .select-wrapper { position: relative; }
+    .select-wrapper::after {
+        content: 'expand_more';
+        font-family: 'Material Symbols Outlined';
+        font-size: 18px;
+        position: absolute;
+        right: 16px; top: 50%;
+        transform: translateY(-50%);
+        color: #99907c;
+        pointer-events: none;
+    }
+</style>
+</head>
+<body>
+
+<!-- ── Top Brand Bar ── -->
+<div class="w-full flex justify-between items-center py-5 px-6 md:px-16 border-b border-outline-variant/30 bg-background/90 backdrop-blur-md sticky top-0 z-50">
+    <a href="code.html" class="flex items-center gap-3 group">
+        <span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors text-xl">arrow_back</span>
+        <span class="font-label-caps text-label-caps text-on-surface-variant group-hover:text-primary transition-colors hidden sm:inline">Back to Archive</span>
+    </a>
+    <span class="font-display-lg text-[22px] md:text-[30px] text-primary uppercase tracking-widest">ThriftCult</span>
+    <button type="button" onclick="toggleCartDrawer(true)" class="flex items-center gap-2 font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors relative w-20 sm:w-32 justify-end">
+        <span class="material-symbols-outlined text-xl">shopping_cart</span>
+        <span class="hidden sm:inline">Cart</span>
+        <span id="cart-count" class="bg-primary text-background rounded-full text-[10px] w-4 h-4 flex items-center justify-center font-bold absolute -top-2 -right-2 hidden">0</span>
+    </button>
+</div>
+
+<!-- ── Main Content ── -->
+<main class="max-w-[1200px] mx-auto px-6 md:px-16 py-12 md:py-20">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb flex items-center gap-2 font-label-caps text-label-caps text-on-surface-variant/60 mb-10 reveal">
+        <a href="../stitch_thriftcult_custom_merchandise/code.html">Home</a>
+        <span class="text-outline-variant/50">›</span>
+        <a href="code.html">Archive</a>
+        <span class="text-outline-variant/50">›</span>
+        <span id="breadcrumb-name" class="text-primary">Product</span>
+    </nav>
+
+    <!-- ── Two-Column Layout ── -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20 items-start">
+
+        <!-- LEFT: Product Image -->
+        <div class="reveal" style="transition-delay:0.1s">
+            <div class="relative">
+                <!-- Corner accents -->
+                <div class="corner-accent corner-tl"></div>
+                <div class="corner-accent corner-tr"></div>
+                <div class="corner-accent corner-bl"></div>
+                <div class="corner-accent corner-br"></div>
+
+                <!-- Image -->
+                <div class="relative overflow-hidden aspect-[4/5] img-skeleton" id="img-wrapper">
+                    <img id="product-img"
+                         src=""
+                         alt="Product"
+                         class="w-full h-full object-cover opacity-0 transition-opacity duration-700"
+                         onload="this.style.opacity='1'; document.getElementById('img-wrapper').classList.remove('img-skeleton')"/>
+                </div>
+
+                <!-- Badge -->
+                <div id="product-badge" class="absolute top-6 left-6 bg-primary px-3 py-1 hidden">
+                    <span id="product-badge-text" class="font-label-caps text-[10px] text-background uppercase font-bold tracking-widest"></span>
+                </div>
+            </div>
+
+            <!-- Thumbnail strip placeholder -->
+            <div class="flex gap-3 mt-4">
+                <div class="w-16 h-16 border border-primary/60 overflow-hidden cursor-pointer" id="thumb-main">
+                    <img id="thumb-img" src="" alt="" class="w-full h-full object-cover"/>
+                </div>
+                <div class="w-16 h-16 border border-outline-variant/30 bg-surface-container-low flex items-center justify-center text-outline text-xs font-label-caps">+5</div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Product Info + Order Form -->
+        <div>
+
+            <!-- Product Info -->
+            <div class="reveal" style="transition-delay:0.2s">
+                <span class="font-label-caps text-label-caps text-primary tracking-[0.25em] mb-3 block">Artisanal Noir Collection</span>
+                <h1 id="product-name" class="font-headline-xl text-[36px] md:text-[42px] text-on-surface leading-tight mb-4" style="font-family:'EB Garamond',serif;">
+                    Product Name
+                </h1>
+                <p id="product-price" class="font-display-lg text-[28px] text-primary mb-2" style="font-family:'EB Garamond',serif;">₹0.00</p>
+                <p class="font-label-caps text-[10px] text-on-surface-variant/50 mb-6 tracking-widest">INCL. OF ALL TAXES · FREE SHIPPING</p>
+
+                <div class="gold-thread mb-6"></div>
+
+                <p id="product-desc" class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed mb-4"></p>
+
+                <!-- Product Meta Tags -->
+                <div class="flex flex-wrap gap-2 mb-8">
+                    <span class="font-label-caps text-[10px] text-on-surface-variant border border-outline-variant/40 px-3 py-1.5 tracking-widest">HANDCRAFTED</span>
+                    <span class="font-label-caps text-[10px] text-on-surface-variant border border-outline-variant/40 px-3 py-1.5 tracking-widest">LIMITED RUN</span>
+                    <span class="font-label-caps text-[10px] text-on-surface-variant border border-outline-variant/40 px-3 py-1.5 tracking-widest">ARTISANAL NOIR</span>
+                </div>
+            </div>
+
+            <!-- ── Order Form ── -->
+            <form id="order-form" novalidate class="reveal" style="transition-delay:0.3s" onsubmit="handleOrder(event)">
+
+                <div class="gold-thread mb-8"></div>
+                <p class="font-label-caps text-label-caps text-primary tracking-[0.25em] mb-6 block">Your Details</p>
+
+                <div class="flex flex-col gap-4 mb-6">
+
+                    <!-- Full Name -->
+                    <div class="input-group">
+                        <input type="text" id="full-name" name="full-name" placeholder="Full Name" autocomplete="name" required/>
+                        <label for="full-name">Full Name</label>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="input-group">
+                        <input type="email" id="email" name="email" placeholder="Email Address" autocomplete="email" required/>
+                        <label for="email">Email Address</label>
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="input-group">
+                        <input type="tel" id="phone" name="phone" placeholder="Phone Number" autocomplete="tel" pattern="[0-9+\s\-()]{7,15}" required/>
+                        <label for="phone">Phone Number</label>
+                    </div>
+
+                    <!-- Shipping Address -->
+                    <div class="input-group">
+                        <input type="text" id="address" name="address" placeholder="Shipping Address" autocomplete="street-address" required/>
+                        <label for="address">Shipping Address</label>
+                    </div>
+
+                </div>
+
+                <!-- ── Payment Method ── -->
+                <div class="gold-thread mb-8"></div>
+                <p class="font-label-caps text-label-caps text-primary tracking-[0.25em] mb-6 block">Payment Method</p>
+
+                <div class="flex gap-4 mb-4">
+
+                    <!-- Online Payment -->
+                    <div class="payment-option">
+                        <input type="radio" name="payment" id="pay-online" value="online" onchange="togglePayment('online')"/>
+                        <label for="pay-online">
+                            <span class="radio-dot"></span>
+                            <span class="material-symbols-outlined text-xl" style="font-variation-settings:'FILL' 0;">credit_card</span>
+                            <span>Online</span>
+                        </label>
+                    </div>
+
+                    <!-- Cash on Delivery -->
+                    <div class="payment-option">
+                        <input type="radio" name="payment" id="pay-cod" value="cod" onchange="togglePayment('cod')"/>
+                        <label for="pay-cod">
+                            <span class="radio-dot"></span>
+                            <span class="material-symbols-outlined text-xl" style="font-variation-settings:'FILL' 0;">local_shipping</span>
+                            <span>Cash on Delivery</span>
+                        </label>
+                    </div>
+
+                </div>
+
+                <!-- Online Payment Panel -->
+                <div class="payment-panel" id="panel-online">
+                    <div class="border border-outline-variant/30 bg-surface-container-low p-6 relative">
+                        <div class="corner-accent corner-tl"></div>
+                        <div class="corner-accent corner-br"></div>
+                        <p class="font-label-caps text-[10px] text-primary tracking-widest mb-5">PAYMENT DETAILS</p>
+
+                        <!-- UPI / Card tabs -->
+                        <div class="flex gap-3 mb-5">
+                            <button type="button" id="tab-upi" onclick="switchTab('upi')"
+                                class="font-label-caps text-[10px] tracking-widest px-4 py-2 border border-primary text-primary transition-all">UPI / QR</button>
+                            <button type="button" id="tab-card" onclick="switchTab('card')"
+                                class="font-label-caps text-[10px] tracking-widest px-4 py-2 border border-outline-variant/30 text-on-surface-variant transition-all">CARD</button>
+                        </div>
+
+                        <!-- UPI panel -->
+                        <div id="upi-panel">
+                            <div class="flex items-center gap-4">
+                                <div class="w-20 h-20 bg-white flex items-center justify-center flex-shrink-0 relative overflow-hidden">
+                                    <!-- Simulated QR code using CSS grid -->
+                                    <svg viewBox="0 0 100 100" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
+                                        <!-- QR pattern simplified -->
+                                        <rect width="100" height="100" fill="white"/>
+                                        <rect x="5" y="5" width="35" height="35" fill="none" stroke="#131313" stroke-width="6"/>
+                                        <rect x="15" y="15" width="15" height="15" fill="#131313"/>
+                                        <rect x="60" y="5" width="35" height="35" fill="none" stroke="#131313" stroke-width="6"/>
+                                        <rect x="70" y="15" width="15" height="15" fill="#131313"/>
+                                        <rect x="5" y="60" width="35" height="35" fill="none" stroke="#131313" stroke-width="6"/>
+                                        <rect x="15" y="70" width="15" height="15" fill="#131313"/>
+                                        <rect x="55" y="55" width="8" height="8" fill="#131313"/>
+                                        <rect x="67" y="55" width="8" height="8" fill="#131313"/>
+                                        <rect x="79" y="55" width="8" height="8" fill="#131313"/>
+                                        <rect x="55" y="67" width="8" height="8" fill="#131313"/>
+                                        <rect x="79" y="67" width="8" height="8" fill="#131313"/>
+                                        <rect x="55" y="79" width="8" height="8" fill="#131313"/>
+                                        <rect x="67" y="79" width="8" height="8" fill="#131313"/>
+                                        <rect x="79" y="79" width="8" height="8" fill="#131313"/>
+                                        <!-- Data modules -->
+                                        <rect x="45" y="5" width="8" height="8" fill="#131313"/>
+                                        <rect x="45" y="21" width="8" height="8" fill="#131313"/>
+                                        <rect x="45" y="37" width="8" height="8" fill="#131313"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="font-body-md text-[13px] text-on-surface mb-1">UPI ID</p>
+                                    <p class="font-label-caps text-[11px] text-primary tracking-widest">thriftcult@upi</p>
+                                    <p class="font-body-md text-[12px] text-on-surface-variant mt-2 leading-relaxed">Scan the QR code or pay to the UPI ID above and enter the transaction reference below.</p>
+                                </div>
+                            </div>
+                            <div class="input-group mt-4">
+                                <input type="text" id="upi-ref" name="upi-ref" placeholder="UPI Transaction ID"/>
+                                <label for="upi-ref">Transaction Reference / UTR No.</label>
+                            </div>
+                        </div>
+
+                        <!-- Card panel -->
+                        <div id="card-panel" class="hidden">
+                            <div class="flex flex-col gap-4">
+                                <div class="input-group">
+                                    <input type="text" id="card-number" name="card-number" placeholder="Card Number" maxlength="19"
+                                        oninput="formatCard(this)"/>
+                                    <label for="card-number">Card Number</label>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="input-group">
+                                        <input type="text" id="card-expiry" name="card-expiry" placeholder="MM / YY" maxlength="7"
+                                            oninput="formatExpiry(this)"/>
+                                        <label for="card-expiry">Expiry Date</label>
+                                    </div>
+                                    <div class="input-group">
+                                        <input type="text" id="card-cvv" name="card-cvv" placeholder="CVV" maxlength="4"
+                                            oninput="this.value=this.value.replace(/\D/g,'')"/>
+                                        <label for="card-cvv">CVV</label>
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <input type="text" id="card-name" name="card-name" placeholder="Name on Card"/>
+                                    <label for="card-name">Name on Card</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COD Panel -->
+                <div class="payment-panel" id="panel-cod">
+                    <div class="border border-outline-variant/30 bg-surface-container-low p-6 flex items-start gap-4">
+                        <span class="material-symbols-outlined text-primary text-3xl mt-1" style="font-variation-settings:'FILL' 0;">local_shipping</span>
+                        <div>
+                            <p class="font-body-md text-[14px] text-on-surface mb-1 font-semibold">Cash on Delivery</p>
+                            <p class="font-body-md text-[13px] text-on-surface-variant leading-relaxed">Pay in cash when your order arrives at your doorstep. Our delivery partner will collect the payment. Please keep the exact amount ready.</p>
+                            <p class="font-label-caps text-[10px] text-primary mt-3 tracking-widest">ESTIMATED DELIVERY: 5–7 WORKING DAYS</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Message -->
+                <p id="form-error" class="font-label-caps text-[10px] text-error tracking-widest mt-4 hidden"></p>
+
+                <!-- Order Summary -->
+                <div class="mt-8 border border-outline-variant/30 bg-surface-container-low p-5 space-y-3">
+                    <div class="flex justify-between items-center font-label-caps text-[11px] text-on-surface-variant tracking-widest">
+                        <span>SUBTOTAL</span><span>₹0.00</span>
+                    </div>
+                    <div class="flex justify-between items-center font-label-caps text-[11px] text-on-surface-variant tracking-widest">
+                        <span>SHIPPING</span><span class="text-primary">FREE</span>
+                    </div>
+                    <div class="gold-thread"></div>
+                    <div class="flex justify-between items-center font-label-caps text-[13px] text-on-surface tracking-widest">
+                        <span>TOTAL</span><span class="text-primary text-[15px]">₹0.00</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons (Add to Cart + Place Order) -->
+                <div class="flex flex-col sm:flex-row gap-4 mt-6">
+                    <button type="button" id="btn-add-to-cart" onclick="addProductToCartFromPage()" class="flex-1 py-4 border border-primary text-primary font-button uppercase tracking-widest hover:bg-primary hover:text-background transition-all duration-300 flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                        Add to Cart
+                    </button>
+                    <button type="submit" class="flex-1 btn-order shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:shadow-[0_0_25px_rgba(212,175,55,0.6)]">
+                        <span class="flex items-center justify-center gap-3">
+                            <span class="material-symbols-outlined text-[18px]" style="font-variation-settings:'FILL' 1;">shopping_bag</span>
+                            Place Order
+                        </span>
+                    </button>
+                </div>
+
+                <p class="font-label-caps text-[10px] text-on-surface-variant/40 tracking-widest text-center mt-4">
+                    🔒 SECURED · YOUR DATA IS SAFE WITH US
+                </p>
+
+            </form>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="border-t border-outline-variant/20 mt-24 py-8 px-6 md:px-16 flex flex-col md:flex-row justify-between items-center gap-4 bg-surface-container-lowest">
+    <span class="font-headline-md text-[18px] text-primary uppercase" style="font-family:'EB Garamond',serif;">ThriftCult</span>
+    <p class="font-body-md text-[12px] text-on-surface-variant/50">© 2024 THRIFTCULT. ARTISANAL NOIR COLLECTIVE.</p>
+    <div class="flex gap-6">
+        <a href="#" class="font-label-caps text-[10px] text-on-surface-variant hover:text-primary transition-colors tracking-widest">TERMS</a>
+        <a href="#" class="font-label-caps text-[10px] text-on-surface-variant hover:text-primary transition-colors tracking-widest">PRIVACY</a>
+        <a href="#" class="font-label-caps text-[10px] text-on-surface-variant hover:text-primary transition-colors tracking-widest">CONTACT</a>
+    </div>
+</footer>
+
+<!-- ── Success Overlay ── -->
+<div class="success-overlay" id="success-overlay">
+    <div class="success-ring">
+        <span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings:'FILL' 1;">check</span>
+    </div>
+    <h2 class="font-headline-xl text-[32px] text-on-surface italic" style="font-family:'EB Garamond',serif;">Order Placed!</h2>
+    <p class="font-body-md text-on-surface-variant text-center max-w-sm leading-relaxed">Thank you for your order. We'll send a confirmation to your email shortly. Your piece is being prepared with care.</p>
+    <div class="flex gap-4 mt-4">
+        <a href="code.html">
+            <button class="font-label-caps text-[11px] tracking-widest border border-primary text-primary px-8 py-3 hover:bg-primary hover:text-background transition-all">
+                Continue Shopping
+            </button>
+        </a>
+    </div>
+</div>
+
+<script>
+// ── Product data ──────────────────────────────────────────────────
+const products = {
+    'noir-trucker': {
+        name: 'Noir Signature Trucker',
+        price: '₹0.00',
+        badge: 'HandDesign',
+        desc: 'A premium black trucker cap with high-contrast gold metallic embroidery on the front panel. Hand-crafted with precision, each cap features individually placed gold thread stitching — no two are alike. The structured front panel is made from heavyweight canvas, and the mesh back ensures breathability without compromising the silhouette.',
+        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCTvKubNDWoVw0bw25JZ_UvayKfH64RmqkVSvB2CK06ojcuzDEIw5u6txsU8A1Pd5fh9wxipAxboG13_fPWy9hoGhh3-hEcFFGoLWowsNoUuZcQjswRDe8napwgl5RzQ77yQHtqEWcAPL0KhmQVy6mYJPlMWu9xBzboiG1PFGNyAVHoDX70xagB3JtHUQb5V9XF_83qanefklwRHRF_teMEf3xJd32RD5MXzB342EIXp5gakG3pWS9D9Uciqwuo-t2mwsbpO2wa9SY'
+    },
+    'gilded-tee': {
+        name: 'Gilded Threads Heavy Tee',
+        price: '₹0.00',
+        badge: '',
+        desc: 'A high-end heavyweight black cotton t-shirt featuring intricate gold wire embroidery of an abstract logo. Crafted from 350gsm compact cotton, this piece is built to outlast trends. The gold embroidery thread is sourced from artisanal workshops and applied by hand, giving each tee a unique character. Part of Collection 04.',
+        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBEnkDsu31vrnt4hSG3CTa4yXV32cvob4ZUZZpdQRPYe6xj6ERWArNJGRszKXx-kWjKl7FUD_ktE0jvAUC490OLHXZM56cFBjsJnt37L5OFrFcVZR4RBOn0X44zkqPBbZl7904KoDvdV9-H22exH83DXXukpLXco6NTesWZE0LdiXJYGdUaxfMHxtZihrwZh6H-_8wDzhg6gcZLxmbDwhphT0hketTYZ9IuCUGN1UMB6eDKMsLkK-FptZKDHyNWw7wP-nmuoO2Csrg'
+    },
+    'artisanal-hoodie': {
+        name: 'Distressed Artisanal Hoodie',
+        price: '₹0.00',
+        badge: 'Archive Piece',
+        desc: 'A distressed black heavyweight hoodie with hand-painted gold accents on the cuffs and hem. Constructed from a heavyweight French Terry fleece at 420gsm, each hoodie is individually distressed by our artisans using proprietary techniques — raw edges, intentional fading, and gold paint accents applied freehand. A true archive piece.',
+        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBxzSOFHLaWHQFQFHsgZaq2QC_9xKCSpiW2OAvWukzTIRB75HbpiufpL3gaA_pHgBPtlwir15UZ6YpRZ6l1kXi65Uw0VYou88uR1azOa_ULts7DQSIVrmuTXVK2t0NFAckFRPAu-QkVR_5Ak71HeAfucfGqlmbsRCgZ99T_yqu--aDhxmb6Q7ZXvCAXOYuheQCBVupjFaAyHXvoYNGPbFiMCvNvAV0Wyvmo_ABdMzhAVLDm1CwRtNCUD2Bg-6e3VNfGjEL-pFRtlBU'
+    },
+    'diamond-cap': {
+        name: 'Diamond Point Cap',
+        price: '₹0.00',
+        badge: '',
+        desc: 'A sleek black minimalist baseball cap featuring a single gold diamond stitch on the side. The crisp, editorial silhouette is achieved through a structured 6-panel design with a pre-curved brim. The gold diamond embroidery is placed by hand on each cap, symbolising the precision and restraint at the heart of ThriftCult.',
+        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCGeHJYJmOB13H5hSkufFMFKHPokj4VLXsT9dPV84wNufguiepqCWDliLo4d0y4CHH747gvT377xzG98pSBvtb-sXiYye3gDEf-Phd3Auu8WAmR-MRQUtau_e3n-thx7PMChI4KBpqA1EoFi5emnFtQ6ESrlsJWs4B5UNpcs08Vzjplj4FO3WofKiali3c71nvEpXHVXtDEP0oeSMcR8A3TWLZkPhtrBxB5pA-GdmF-wc_7UkeShPTI94t1__rL8yf-GF8nEsAyVJ8'
+    },
+    'gold-foil-tee': {
+        name: 'Structured Gold Foil Tee',
+        price: '₹0.00',
+        badge: 'Limited',
+        desc: 'A minimalist black t-shirt with a structured boxy fit, featuring a gold foil brand mark on the chest. The foil is applied using a heat-transfer process with a custom die, creating a mirror-like finish that catches light from every angle. Available in strictly limited quantities — each piece is numbered.',
+        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCpegRzcGml_tXKInsmoDaufbS1FZWRDxzf5Vmq_Y6ce6wLJOktzCiXOHcroQBdcEbFuM6eLqdUc3VcL00ByRKSu1wNAnSRx7lMaQeIqn9Fq6VsN_LJtO6M_eDIj2Jw0JueRoxSo20jDZ8v8Dzs0UQOupzgqbtbJ46d1-W-lTXsmqPE1NIbx4oEZtdMwBxDySJSTQ6PMnrI2lGGpm6vchvKT7v3ESRs8gzCCBEwEYzzqz6wf38K5Kt_WVRKx3H0mqGQwveqVPp6fAA'
+    },
+    'zip-hoodie': {
+        name: 'Hardware Zip Hoodie',
+        price: '₹0.00',
+        badge: '',
+        desc: 'A luxury heavyweight zip-up hoodie in deep charcoal black with custom gold-plated hardware. The zipper pull, eyelets, and drawstring tips are all custom-fabricated in brass and gold-plated — a detail you feel every time you wear it. The body is 380gsm loopback cotton, pre-washed for a lived-in drape from day one.',
+        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCi7xmIf7KS9WenEauAoCunGUFz7lyzidwieC4XtO4uJUBm-85vHXtfXZmzf46qHjttphXWrTvLz7FViFS_imW5S9koe8faGpzgUPwsFANLAQwrDu_awJpamIDpVO2lD33bzk7whn6kqQHkPyMaR7cIpQyzJECZaAc_yeSA3R6vwUA4Abqkq31ZNvAk9ocUeUVlN7hpJfLtcy5WPB9cIcKRCchCywycZW_PcHuxqOSEv3CRVqoOpYI49Ro4w-CHh09tY2AaItWcy8I'
+    }
+};
+
+// ── Load product from URL param ───────────────────────────────────
+let isCartCheckout = false;
+
+function loadProduct() {
+    const params = new URLSearchParams(window.location.search);
+    const checkoutType = params.get('checkout');
+    
+    if (checkoutType === 'cart') {
+        isCartCheckout = true;
+        const cart = getCart();
+        
+        if (cart.length === 0) {
+            window.location.href = 'code.html';
+            return;
+        }
+        
+        const firstItemKey = cart[0].key;
+        const firstProduct = products[firstItemKey] || products['noir-trucker'];
+        
+        document.getElementById('product-img').src = firstProduct.img;
+        document.getElementById('thumb-img').src = firstProduct.img;
+        document.getElementById('product-name').textContent = 'Your Archive Order';
+        document.getElementById('product-price').textContent = '₹0.00';
+        document.getElementById('product-desc').textContent = 'You are placing a combined order for the items in your cart. Review the list of garments below and fill out your details to finalize your request.';
+        document.getElementById('breadcrumb-name').textContent = 'Checkout';
+        document.title = 'ThriftCult | Checkout';
+        
+        const btnAddToCart = document.getElementById('btn-add-to-cart');
+        if (btnAddToCart) {
+            btnAddToCart.style.display = 'none';
+        }
+        
+        renderCartCheckoutSummary();
+    } else {
+        const key = params.get('product') || 'noir-trucker';
+        const p = products[key] || products['noir-trucker'];
+        
+        document.getElementById('product-img').src = p.img;
+        document.getElementById('thumb-img').src = p.img;
+        document.getElementById('product-name').textContent = p.name;
+        document.getElementById('product-price').textContent = p.price;
+        document.getElementById('product-desc').textContent = p.desc;
+        document.getElementById('breadcrumb-name').textContent = p.name;
+        document.title = 'ThriftCult | ' + p.name;
+        
+        if (p.badge) {
+            document.getElementById('product-badge').classList.remove('hidden');
+            document.getElementById('product-badge-text').textContent = p.badge;
+        }
+        
+    }
+}
+
+// ── Payment toggle ────────────────────────────────────────────────
+function togglePayment(type) {
+    const onlinePanel = document.getElementById('panel-online');
+    const codPanel = document.getElementById('panel-cod');
+    if (type === 'online') {
+        onlinePanel.classList.add('active');
+        codPanel.classList.remove('active');
+    } else {
+        codPanel.classList.add('active');
+        onlinePanel.classList.remove('active');
+    }
+}
+
+// ── UPI/Card tab switch ───────────────────────────────────────────
+function switchTab(tab) {
+    const upiPanel = document.getElementById('upi-panel');
+    const cardPanel = document.getElementById('card-panel');
+    const tabUpi = document.getElementById('tab-upi');
+    const tabCard = document.getElementById('tab-card');
+
+    if (tab === 'upi') {
+        upiPanel.classList.remove('hidden');
+        cardPanel.classList.add('hidden');
+        tabUpi.style.borderColor = '#d4af37';
+        tabUpi.style.color = '#f2ca50';
+        tabCard.style.borderColor = '#4d4635';
+        tabCard.style.color = '#99907c';
+    } else {
+        cardPanel.classList.remove('hidden');
+        upiPanel.classList.add('hidden');
+        tabCard.style.borderColor = '#d4af37';
+        tabCard.style.color = '#f2ca50';
+        tabUpi.style.borderColor = '#4d4635';
+        tabUpi.style.color = '#99907c';
+    }
+}
+
+// ── Card number formatting ────────────────────────────────────────
+function formatCard(el) {
+    let v = el.value.replace(/\D/g, '').substring(0, 16);
+    el.value = v.replace(/(.{4})/g, '$1 ').trim();
+}
+function formatExpiry(el) {
+    let v = el.value.replace(/\D/g, '').substring(0, 4);
+    if (v.length >= 3) v = v.slice(0, 2) + ' / ' + v.slice(2);
+    el.value = v;
+}
+
+// ── Form validation & submit ──────────────────────────────────────
+function handleOrder(e) {
+    e.preventDefault();
+    const err = document.getElementById('form-error');
+    err.classList.add('hidden');
+
+    const name = document.getElementById('full-name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const address = document.getElementById('address').value.trim();
+    const payment = document.querySelector('input[name="payment"]:checked');
+    if (!name || !email || !phone || !address) {
+        err.textContent = '⚠ Please fill in all required fields.';
+        err.classList.remove('hidden');
+        return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        err.textContent = '⚠ Please enter a valid email address.';
+        err.classList.remove('hidden');
+        return;
+    }
+    if (!payment) {
+        err.textContent = '⚠ Please select a payment method.';
+        err.classList.remove('hidden');
+        return;
+    }
+
+    if (isCartCheckout) {
+        localStorage.removeItem(CART_KEY);
+    }
+
+    // Show success
+    document.getElementById('success-overlay').classList.add('show');
+}
+
+// ── Scroll reveal ─────────────────────────────────────────────────
+function initReveal() {
+    const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+}
+
+// ── Shared Cart System ─────────────────────────────────────────────────────────────
+const CART_KEY = 'thriftcult_cart';
+
+function getCart() {
+    try {
+        return JSON.parse(localStorage.getItem(CART_KEY)) || [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function saveCart(cart) {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    updateCartCountUI();
+}
+
+function addToCart(productKey, quantity = 1) {
+    const cart = getCart();
+    const existingIndex = cart.findIndex(item => item.key === productKey);
+    
+    if (existingIndex > -1) {
+        cart[existingIndex].quantity += quantity;
+    } else {
+        cart.push({
+            key: productKey,
+            quantity: quantity
+        });
+    }
+    saveCart(cart);
+    renderCartItems();
+    showToast(`Added to cart.`);
+}
+
+function addProductToCartFromPage() {
+    const params = new URLSearchParams(window.location.search);
+    const key = params.get('product') || 'noir-trucker';
+    
+    addToCart(key);
+    
+    setTimeout(() => {
+        toggleCartDrawer(true);
+    }, 300);
+}
+
+function removeFromCart(productKey) {
+    let cart = getCart();
+    cart = cart.filter(item => item.key !== productKey);
+    saveCart(cart);
+    renderCartItems();
+    if (isCartCheckout) {
+        renderCartCheckoutSummary();
+    }
+}
+
+function updateQuantity(productKey, delta) {
+    const cart = getCart();
+    const item = cart.find(item => item.key === productKey);
+    if (item) {
+        item.quantity += delta;
+        if (item.quantity <= 0) {
+            removeFromCart(productKey);
+            return;
+        }
+        saveCart(cart);
+        renderCartItems();
+        if (isCartCheckout) {
+            renderCartCheckoutSummary();
+        }
+    }
+}
+
+function updateCartCountUI() {
+    const cart = getCart();
+    const count = cart.reduce((total, item) => total + item.quantity, 0);
+    const countEl = document.getElementById('cart-count');
+    if (countEl) {
+        countEl.textContent = count;
+        if (count > 0) {
+            countEl.classList.remove('hidden');
+        } else {
+            countEl.classList.add('hidden');
+        }
+    }
+}
+
+function renderCartItems() {
+    const container = document.getElementById('cart-items-container');
+    const subtotalEl = document.getElementById('cart-subtotal');
+    if (!container) return;
+    
+    const cart = getCart();
+    
+    if (cart.length === 0) {
+        container.innerHTML = `<p id="empty-cart-msg" class="text-center font-body-lg text-on-surface-variant opacity-60 mt-12">Your cart is empty.</p>`;
+        subtotalEl.textContent = '₹0.00';
+        return;
+    }
+    
+    let html = '';
+    cart.forEach(item => {
+        const p = products[item.key];
+        if (!p) return;
+        
+        html += `
+            <div class="flex gap-4 border-b border-outline-variant/20 pb-4 relative">
+                <div class="w-20 h-24 bg-surface-container-low flex-shrink-0 border border-outline-variant/30">
+                    <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover"/>
+                </div>
+                <div class="flex-grow flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start">
+                            <h4 class="font-headline-md text-base text-on-surface leading-tight font-semibold pr-4">${p.name}</h4>
+                            <button onclick="removeFromCart('${item.key}')" class="text-on-surface-variant hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-lg">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center mt-2">
+                        <div class="flex items-center border border-outline-variant/30">
+                            <button onclick="updateQuantity('${item.key}', -1)" class="px-2 py-0.5 text-on-surface-variant hover:text-primary transition-colors text-sm font-bold">-</button>
+                            <span class="px-3 py-0.5 font-body-md text-xs border-x border-outline-variant/30">${item.quantity}</span>
+                            <button onclick="updateQuantity('${item.key}', 1)" class="px-2 py-0.5 text-on-surface-variant hover:text-primary transition-colors text-sm font-bold">+</button>
+                        </div>
+                        <span class="font-label-caps text-sm text-primary font-semibold">${p.price}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+    subtotalEl.textContent = '₹0.00';
+}
+
+function renderCartCheckoutSummary() {
+    const summaryContainer = document.querySelector('#order-form .mt-8');
+    if (!summaryContainer) return;
+    
+    const cart = getCart();
+    
+    if (cart.length === 0) {
+        summaryContainer.innerHTML = `<p class="text-center text-sm text-on-surface-variant">Your cart is empty. <a href="code.html" class="text-primary underline">Go back to Archive</a></p>`;
+        return;
+    }
+    
+    let itemsHtml = '';
+    cart.forEach(item => {
+        const p = products[item.key];
+        if (p) {
+            itemsHtml += `
+                <div class="flex justify-between items-center font-label-caps text-[11px] text-on-surface-variant tracking-widest">
+                    <span>${p.name} x ${item.quantity}</span>
+                    <span>${p.price}</span>
+                </div>
+            `;
+        }
+    });
+    
+    summaryContainer.innerHTML = `
+        <div class="space-y-3 w-full">
+            <p class="font-label-caps text-[10px] text-primary tracking-widest mb-2">ITEMS IN ORDER</p>
+            ${itemsHtml}
+            <div class="gold-thread"></div>
+            <div class="flex justify-between items-center font-label-caps text-[11px] text-on-surface-variant tracking-widest">
+                <span>SUBTOTAL</span><span>₹0.00</span>
+            </div>
+            <div class="flex justify-between items-center font-label-caps text-[11px] text-on-surface-variant tracking-widest">
+                <span>SHIPPING</span><span class="text-primary">FREE</span>
+            </div>
+            <div class="gold-thread"></div>
+            <div class="flex justify-between items-center font-label-caps text-[13px] text-on-surface tracking-widest">
+                <span>TOTAL</span><span class="text-primary text-[15px]">₹0.00</span>
+            </div>
+        </div>
+    `;
+}
+
+function toggleCartDrawer(open) {
+    const drawer = document.getElementById('cart-drawer');
+    const backdrop = document.getElementById('cart-backdrop');
+    const container = document.getElementById('cart-container');
+    
+    if (!drawer) return;
+    
+    if (open) {
+        drawer.classList.remove('invisible');
+        setTimeout(() => {
+            backdrop.classList.remove('opacity-0');
+            container.classList.remove('translate-x-full');
+        }, 10);
+        document.body.classList.add('cart-drawer-open');
+        renderCartItems();
+    } else {
+        backdrop.classList.add('opacity-0');
+        container.classList.add('translate-x-full');
+        setTimeout(() => {
+            drawer.classList.add('invisible');
+        }, 500);
+        document.body.classList.remove('cart-drawer-open');
+    }
+}
+
+function checkoutCart() {
+    const cart = getCart();
+    if (cart.length === 0) {
+        showToast("Cart is empty");
+        return;
+    }
+    toggleCartDrawer(false);
+    window.location.href = 'product.html?checkout=cart';
+}
+
+function showToast(message) {
+    let toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.className = 'fixed bottom-6 right-6 z-[200] flex flex-col gap-2 pointer-events-none';
+        document.body.appendChild(toastContainer);
+    }
+    
+    const toast = document.createElement('div');
+    toast.className = 'bg-surface-container border border-primary text-on-surface px-6 py-4 flex items-center gap-3 shadow-2xl pointer-events-auto transform translate-y-10 opacity-0 transition-all duration-300';
+    toast.innerHTML = `
+        <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+        <span class="font-label-caps text-xs tracking-wider">${message.toUpperCase()}</span>
+    `;
+    toastContainer.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.classList.remove('translate-y-10', 'opacity-0');
+    }, 10);
+    
+    setTimeout(() => {
+        toast.classList.add('translate-y-10', 'opacity-0');
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }, 3000);
+}
+
+// ── Init ──────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    loadProduct();
+    initReveal();
+    updateCartCountUI();
+});
+</script>
+
+<!-- Cart Drawer Component -->
+<div id="cart-drawer" class="fixed inset-0 z-[120] pointer-events-none invisible transition-all duration-300">
+    <div id="cart-backdrop" onclick="toggleCartDrawer(false)" class="absolute inset-0 bg-background/80 backdrop-blur-sm opacity-0 transition-opacity duration-500 ease-in-out pointer-events-auto"></div>
+    <div id="cart-container" class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-surface border-l border-outline-variant/30 flex flex-col pointer-events-auto translate-x-full transition-transform duration-500 ease-in-out shadow-2xl shadow-black">
+        <div class="p-6 border-b border-outline-variant/30 flex justify-between items-center bg-surface-container-lowest">
+            <span class="font-headline-md text-2xl text-primary uppercase tracking-wider italic">Your Cart</span>
+            <button onclick="toggleCartDrawer(false)" class="text-on-surface-variant hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-2xl">close</span>
+            </button>
+        </div>
+        <div id="cart-items-container" class="flex-grow overflow-y-auto p-6 space-y-6 bg-surface-dim">
+            <p id="empty-cart-msg" class="text-center font-body-lg text-on-surface-variant opacity-60 mt-12">Your cart is empty.</p>
+        </div>
+        <div class="p-6 border-t border-outline-variant/30 bg-surface-container-lowest space-y-4">
+            <div class="flex justify-between items-center font-label-caps text-sm text-on-surface-variant tracking-widest">
+                <span>SUBTOTAL</span><span id="cart-subtotal" class="text-primary text-base font-semibold">₹0.00</span>
+            </div>
+            <p class="font-body-md text-xs text-on-surface-variant/50">Free shipping & taxes included.</p>
+            <button onclick="checkoutCart()" class="w-full bg-primary text-background font-button text-sm uppercase tracking-widest py-4 hover:bg-secondary transition-colors duration-300 flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:shadow-[0_0_25px_rgba(212,175,55,0.6)]">
+                <span class="material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1;">shopping_bag</span>
+                Proceed to Checkout
+            </button>
+        </div>
+    </div>
+</div>
+</body>
+</html>
