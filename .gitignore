@@ -1,0 +1,11 @@
+# Ignore old backup source folders (not needed for hosting)
+stitch_thriftcult_custom_merchandise/
+stitch_thriftcult_custom_merchandise (1)/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor/IDE directories
+.vscode/
+.idea/
